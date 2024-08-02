@@ -6,5 +6,7 @@ import kotlinx.coroutines.flow.Flow
 
 data class SearchState(
     val searchQuery: String = "",
+    val selectedCategory: String = "",
+    val categories: List<String> = listOf("general", "sports", "business", "entertainment","technology"),
     val articles: Flow<PagingData<Article>>? = null
 )

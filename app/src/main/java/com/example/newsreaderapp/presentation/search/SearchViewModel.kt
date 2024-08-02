@@ -21,10 +21,15 @@ class SearchViewModel @Inject constructor(
     fun onEvent(event: SearchEvent) {
         when (event) {
             is SearchEvent.UpdateSearchQuery -> {
-                _state.value = _state.value.copy(searchQuery = event.searchQuery)
+                _state.value = _state.value.copy(searchQuery = event.searchQuery, selectedCategory = "")
             }
 
             is SearchEvent.SearchNews -> {
+                searchNews()
+            }
+
+            is SearchEvent.SelectCategory -> {
+                _state.value = _state.value.copy(selectedCategory = event.category)
                 searchNews()
             }
 
@@ -33,12 +38,16 @@ class SearchViewModel @Inject constructor(
     }
 
     private fun searchNews() {
+        val searchQueryWithCategory = if (_state.value.selectedCategory.isNotEmpty()) {
+            "${_state.value.searchQuery} ${_state.value.selectedCategory}"
+        } else {
+            _state.value.searchQuery
+        }
         val articles = searchNewsUseCase(
-            searchQuery = _state.value.searchQuery,
-            sources = listOf("bbc-news", "abc-news", "al-jazeera-english")
+            searchQuery = searchQueryWithCategory,
+            sources = listOf("bbc-news", "abc-news", "al-jazeera-english"),
         ).cachedIn(viewModelScope)
         _state.value = _state.value.copy(articles = articles)
     }
-
 
 }
