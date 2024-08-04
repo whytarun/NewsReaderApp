@@ -39,3 +39,20 @@ A modern Android app built with Jetpack Compose that provides a seamless news re
 - **Mockito**: For mocking dependencies in unit tests.
 - **Espresso**: For UI testing.
 - **JUnit**: For running unit tests and assertions.
+
+## App Architecture
+<img width="802" alt="AppArchitecture" src="https://github.com/user-attachments/assets/548f19b5-472d-4209-9bac-d7c8056c0a28">
+
+## App Preview
+
+<img width="314" alt="HomeScreen" src="https://github.com/user-attachments/assets/2abf104f-ef91-4501-88c4-eccd0f26f1c6">
+<img width="311" alt="SearchScreen" src="https://github.com/user-attachments/assets/c0271b95-70ca-4c0e-a1ca-4aa99ccd9def">
+<img width="353" alt="FilterCategory_1" src="https://github.com/user-attachments/assets/2c68fa1d-4fb1-4f9b-a70c-339faef16625">
+<img width="337" alt="FilterCategory_2" src="https://github.com/user-attachments/assets/0890c331-a6e8-4463-a7ac-1480d505aa65">
+<img width="311" alt="DetailScreen" src="https://github.com/user-attachments/assets/b9e2b22e-3113-4b7f-b7b7-de963d659a98">
+<img width="312" alt="BookMarkScreen" src="https://github.com/user-attachments/assets/b84e7d4e-49db-412b-bfe7-6fdfd6db9238">
+
+
+
+
+
