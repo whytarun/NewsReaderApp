@@ -1,5 +1,6 @@
 package com.example.newsreaderapp.presentation.common
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import com.example.newsreaderapp.domain.model.Article
@@ -19,13 +21,15 @@ import com.example.newsreaderapp.presentation.util.Dimens.MediumPadding1
 fun ArticlesList(
     modifier: Modifier = Modifier,
     articles: List<Article>,
-    onClick: (Article) -> Unit
+    onClick: (Article) -> Unit,
+    testMode: Boolean = false
 ) {
-    if (articles.isEmpty()){
+    if (articles.isEmpty()) {
         EmptyScreen()
     }
     LazyColumn(
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier.testTag("ArticlesList")
+            .fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(MediumPadding1),
         contentPadding = PaddingValues(all = ExtraSmallPadding2)
     ) {
@@ -42,14 +46,16 @@ fun ArticlesList(
 
 @Composable
 fun ArticlesList(
-    modifier: Modifier= Modifier,
-    articles :LazyPagingItems<Article>,
-    onClick:(Article) -> Unit
+    modifier: Modifier = Modifier,
+    articles: LazyPagingItems<Article>,
+    onClick: (Article) -> Unit,
+    testMode: Boolean = false
 ) {
-    val handlePagingResult = handlePagingResult(articles)
+    val handlePagingResult = handlePagingResult(articles,testMode)
     if (handlePagingResult) {
         LazyColumn(
-            modifier = modifier.fillMaxSize(),
+            modifier = modifier.testTag("ArticlesList")
+                .fillMaxSize(),
             verticalArrangement = Arrangement.spacedBy(MediumPadding1),
             contentPadding = PaddingValues(all = ExtraSmallPadding2)
         ) {
@@ -65,22 +71,27 @@ fun ArticlesList(
 }
 
 
+
+
 @Composable
 fun handlePagingResult(
-    articles :LazyPagingItems<Article>,
-) :Boolean{
+    articles: LazyPagingItems<Article>,
+    testMode: Boolean = false
+): Boolean {
     val loadState = articles.loadState
-    val error = when{
+    val error = when {
         loadState.refresh is LoadState.Error -> loadState.refresh as LoadState.Error
         loadState.prepend is LoadState.Error -> loadState.prepend as LoadState.Error
         loadState.append is LoadState.Error -> loadState.append as LoadState.Error
         else -> null
     }
-    return when{
-        loadState.refresh is LoadState.Loading ->{
+
+    return when {
+        loadState.refresh is LoadState.Loading && !testMode -> {
             ShimmerEffect()
             false
         }
+
         error != null -> {
             EmptyScreen(
                 error = error
@@ -88,7 +99,7 @@ fun handlePagingResult(
             false
         }
 
-        articles.itemCount == 0 ->{
+        articles.itemCount == 0 -> {
             com.example.newsreaderapp.presentation.common.EmptyScreen()
             false
         }
@@ -100,9 +111,9 @@ fun handlePagingResult(
 }
 
 @Composable
-private fun ShimmerEffect(){
+private fun ShimmerEffect() {
     Column(verticalArrangement = Arrangement.spacedBy(MediumPadding1)) {
-        repeat(10){
+        repeat(10) {
             ArticleCardShimmerEffect(
                 modifier = Modifier.padding(horizontal = MediumPadding1)
             )

@@ -1,5 +1,6 @@
 package com.example.newsreaderapp.presentation.home
 
+import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.basicMarquee
@@ -17,16 +18,24 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.newsreaderapp.domain.model.Article
+import com.example.newsreaderapp.domain.model.Source
 import com.example.newsreaderapp.presentation.common.ArticlesList
 import com.example.newsreaderapp.presentation.common.SearchBar
 import com.example.newsreaderapp.presentation.util.Dimens.MediumPadding1
+import com.example.newsreaderapp.util.MockData
+import kotlinx.coroutines.flow.flowOf
 import ti.mp.androidarchitecturesample.R
 
 
@@ -35,7 +44,8 @@ import ti.mp.androidarchitecturesample.R
 fun HomeScreen(
     articles: LazyPagingItems<Article>,
     navigateToSearch: () -> Unit,
-    navigateToDetails: (Article) -> Unit
+    navigateToDetails: (Article) -> Unit,
+    testMode: Boolean = false
 ) {
 
     val titles by remember {
@@ -50,6 +60,7 @@ fun HomeScreen(
         }
     }
 
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -60,6 +71,7 @@ fun HomeScreen(
             painter = painterResource(id = R.drawable.ic_launcher_foreground),
             contentDescription = null,
             modifier = Modifier
+                .semantics { testTag = "LogoImage" }
                 .width(150.dp)
                 .height(30.dp)
                 .padding(horizontal = MediumPadding1)
@@ -69,6 +81,7 @@ fun HomeScreen(
 
         SearchBar(
             modifier = Modifier
+                .semantics { testTag = "SearchBar" }
                 .padding(horizontal = MediumPadding1)
                 .fillMaxWidth(),
             text = "",
@@ -82,18 +95,23 @@ fun HomeScreen(
 
         Text(
             text = titles, modifier = Modifier
+                .semantics { testTag = "TitlesMarquee" }
                 .fillMaxWidth()
                 .padding(start = MediumPadding1)
-                .basicMarquee(), fontSize = 12.sp,
+                .basicMarquee(),
+                fontSize = 12.sp,
             color = colorResource(id = R.color.placeholder)
         )
 
         Spacer(modifier = Modifier.height(MediumPadding1))
 
         ArticlesList(
-            modifier = Modifier.padding(horizontal = MediumPadding1),
+            modifier = Modifier
+                .testTag("ArticlesList")
+                .padding(horizontal = MediumPadding1),
             articles = articles,
-            onClick = navigateToDetails
+            onClick = navigateToDetails,
+            testMode = testMode
         )
     }
 }

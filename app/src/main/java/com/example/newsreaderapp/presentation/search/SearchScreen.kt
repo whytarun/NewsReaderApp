@@ -15,6 +15,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.newsreaderapp.domain.model.Article
@@ -28,7 +29,8 @@ import com.example.newsreaderapp.presentation.util.Dimens.MediumPadding1
 fun SearchScreen(
     state: SearchState,
     event:(SearchEvent) -> Unit,
-    navigateToDetails:(Article) -> Unit
+    navigateToDetails:(Article) -> Unit,
+    testMode: Boolean = false
 ) {
 
     Column(
@@ -37,6 +39,7 @@ fun SearchScreen(
             .statusBarsPadding()
     ) {
         SearchBar(
+            modifier = Modifier.testTag("SearchBar"),
             text = state.searchQuery,
             readOnly = false,
             onValueChange = { event(SearchEvent.UpdateSearchQuery(it)) },
@@ -56,8 +59,10 @@ fun SearchScreen(
         state.articles?.let {
             val articles = it.collectAsLazyPagingItems()
             ArticlesList(
+                modifier = Modifier.testTag("ArticlesList"),
                 articles = articles,
-                onClick = navigateToDetails
+                onClick = navigateToDetails,
+                testMode = testMode
             )
         }
     }
